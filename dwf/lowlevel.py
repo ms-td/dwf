@@ -124,6 +124,12 @@ filterDecimate = 0
 filterAverage = 1
 filterMinMax = 2
 
+# analog acquisition filter:
+DwfTriggerSlope = c_int
+DwfTriggerSlopeRise = 0
+DwfTriggerSlopeFall = 1
+DwfTriggerSlopeEither = 2
+
 # analog in trigger mode:
 TRIGTYPE = c_int
 trigtypeEdge = 0
@@ -408,7 +414,7 @@ def FDwfAnalogInStatusData(hdwf, idxChannel,
     if cdData is not None:
         return _FDwfAnalogInStatusData(hdwf, idxChannel,
                                        rgdVoltData_or_cdData, cdData)
-    cdData = rgdVoltData_or_cdData
+    cdData = int(rgdVoltData_or_cdData)
     rgdVoltData = (c_double * cdData)()
     _FDwfAnalogInStatusData(hdwf, idxChannel, rgdVoltData, cdData)
     return tuple(rgdVoltData)
@@ -747,7 +753,14 @@ _define("FDwfAnalogOutTriggerSourceSet",
 _define("FDwfAnalogOutTriggerSourceGet",
         (HDWF, c_int, POINTER(TRIGSRC),),
         ((_ARGIN, "hdwf"), (_ARGIN, "idxChannel"), (_ARGOUT, "ptrigsrc"),))
-
+#  FDwfAnalogOutTriggerSlopeSet(HDWF hdwf, int idxChannel, DwfTriggerSlope slope);
+_define("FDwfAnalogOutTriggerSlopeSet",
+        (HDWF, c_int, DwfTriggerSlope,),
+        ((_ARGIN, "hdwf"), (_ARGIN, "idxChannel"), (_ARGIN, "slope"),))
+#  FDwfAnalogOutTriggerSlopeGet(HDWF hdwf, int idxChannel, DwfTriggerSlope *pslope);
+_define("FDwfAnalogOutTriggerSlopeGet",
+        (HDWF, c_int, POINTER(DwfTriggerSlope),),
+        ((_ARGIN, "hdwf"), (_ARGIN, "idxChannel"), (_ARGOUT, "pslope"),))
 #  FDwfAnalogOutRunInfo(HDWF hdwf, int idxChannel, double *psecMin, double *psecMax);
 _define("FDwfAnalogOutRunInfo",
         (HDWF, c_int, POINTER(c_double), POINTER(c_double),),
